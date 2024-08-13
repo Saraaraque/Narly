@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresa Transporte</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .titulo {
+            text-align: center;
+            font-size: 2.5rem;
+            color: #0c0202;
+            margin-bottom: 20px;
+            font-family: "Homer Simpson UI";
+        }
+
+        .subtitulo {
+            font-size: 1.8rem;
+            color: #160c0c;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            font-family: "Homer Simpson UI";
+        }
+
+        .tabla {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .tabla th, .tabla td {
+            border: 1px solid #ddd;
+            
+            padding: 12px;
+            text-align: left;
+            font-family: "Courier New", monospace;
+        }
+
+        .tabla th {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .tabla tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .etiqueta {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            color: #333;
+            font-family: "Homer Simpson UI";
+        }
+
+        .input-text {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .input-text:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .boton {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+            font-family: "Homer Simpson UI";
+        }
+
+        .boton:hover {
+            background-color: #0056b3;
+        }
+
+        .resultado {
+            font-size: 1rem;
+            color: #28a745;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="titulo">EMPRESA TRANSPORTE</h1>
+        
+        <div id="camiones-container" class="seccion">
+            <h2 class="subtitulo">Camiones Registrados</h2>
+            <table id="camiones-table" class="tabla">
+                <thead>
+                    <tr>
+                        <th>Matrícula</th>
+                        <th>Capacidad de Carga (kg)</th>
+                        <th>Consumo de Gasolina (gal/km)</th>
+                        <th>Carga Actual (kg)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Camiones se agregarán aquí -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="form-container" class="seccion">
+            <h2 class="subtitulo">Registrar Camión</h2>
+            <form id="camion-form" class="formulario">
+                <div class="form-group">
+                    <label for="matricula" class="etiqueta">Matrícula:</label>
+                    <input type="text" id="matricula" class="input-text" placeholder="Ingresa la matrícula" required>
+                </div>
+                <div class="form-group">
+                    <label for="capacidad" class="etiqueta">Capacidad de Carga (kg):</label>
+                    <input type="number" id="capacidad" class="input-text" placeholder="Ingresa la capacidad de carga" required>
+                </div>
+                <div class="form-group">
+                    <label for="consumo" class="etiqueta">Consumo de Gasolina (gal/km):</label>
+                    <input type="number" id="consumo" class="input-text" placeholder="Ingresa el consumo de gasolina" required>
+                </div>
+                <button type="submit" class="boton">Registrar Camión</button>
+            </form>
+        </div>
+
+        <div id="carga-container" class="seccion">
+            <h2 class="subtitulo">Cargar Camión</h2>
+            <div class="form-group">
+                <label for="peso-carga" class="etiqueta">Peso de la Carga (kg):</label>
+                <input type="number" id="peso-carga" class="input-text" placeholder="Ingresa el peso de la carga" required>
+            </div>
+            <button id="cargar-btn" class="boton">Cargar Mejor Camión</button>
+            <p id="resultado" class="resultado"></p>
+        </div>
+    </div>
+
+    <script>
+        const camiones = [];
+
+        document.getElementById('camion-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const matricula = document.getElementById('matricula').value;
+            const capacidad = parseFloat(document.getElementById('capacidad').value);
+            const consumo = parseFloat(document.getElementById('consumo').value);
+
+            const camion = {
+                matricula: matricula,
+                capacidad: capacidad,
+                consumo: consumo,
+                cargaActual: 0
+            };
+
+            camiones.push(camion);
+            agregarCamionATabla(camion);
+            document.getElementById('camion-form').reset();
+        });
+
+        function agregarCamionATabla(camion) {
+            const tabla = document.querySelector('#camiones-table tbody');
+            const fila = document.createElement('tr');
+
+            fila.innerHTML = `
+                <td>${camion.matricula}</td>
+                <td>${camion.capacidad}</td>
+                <td>${camion.consumo}</td>
+                <td>${camion.cargaActual}</td>
+            `;
+
+            tabla.appendChild(fila);
+        }
+
+        document.getElementById('cargar-btn').addEventListener('click', function() {
+            const pesoCarga = parseFloat(document.getElementById('peso-carga').value);
+            let mejorCamion = null;
+
+            for (let camion of camiones) {
+                if (camion.capacidad >= camion.cargaActual + pesoCarga) {
+                    if (!mejorCamion || camion.consumo < mejorCamion.consumo) {
+                        mejorCamion = camion;
+                    }
+                }
+            }
+
+            const resultado = document.getElementById('resultado');
+            if (mejorCamion) {
+                mejorCamion.cargaActual += pesoCarga;
+                actualizarTabla();
+                resultado.textContent = `Carga añadida al camión con matrícula ${mejorCamion.matricula}.`;
+            } else {
+                resultado.textContent = 'No hay camiones disponibles con capacidad suficiente.';
+            }
+        });
+
+        function actualizarTabla() {
+            const tabla = document.querySelector('#camiones-table tbody');
+            tabla.innerHTML = '';
+            for (let camion of camiones) {
+                agregarCamionATabla(camion);
+            }
+        }
+    </script>
+</body>
+</html>
+
